@@ -18,6 +18,7 @@ func Init(rw http.ResponseWriter, req *http.Request) {
 
 func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(planets); err != nil {
 		panic(err)
@@ -26,6 +27,7 @@ func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 
 func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(vehicles); err != nil {
 		panic(err)
