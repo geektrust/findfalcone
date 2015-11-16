@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/dhanush/findfalcone/Godeps/_workspace/src/github.com/gorilla/mux"
 	"net/http"
+	"os"
 )
 
 var planets = Planets{Planet{"Donlon", 400}, Planet{"Enchai", 40}, Planet{"Jebing", 100}, Planet{"Sapir", 240}, Planet{"Lerbin", 200}, Planet{"Pingasor", 80}}
@@ -34,10 +36,16 @@ func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 func main() {
 
 	r := mux.NewRouter()
+	var port = os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
+	fmt.Println("Starting server on " + port)
 	r.HandleFunc("/init", Init).Methods("POST").Headers("Accept", "application/json")
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
 	r.HandleFunc("/vehicles", VehicleHandler).Methods("GET")
 
 	http.Handle("/", r)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+port, nil)
 }
