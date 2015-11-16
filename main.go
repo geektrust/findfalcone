@@ -17,7 +17,6 @@ func Init(rw http.ResponseWriter, req *http.Request) {
 }
 
 func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
-
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(planets); err != nil {
@@ -34,13 +33,11 @@ func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-
 	r := mux.NewRouter()
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
-
 	fmt.Println("Starting server on " + port)
 	r.HandleFunc("/init", Init).Methods("POST").Headers("Accept", "application/json")
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
