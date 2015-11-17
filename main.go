@@ -4,18 +4,63 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/dhanush/findfalcone/Godeps/_workspace/src/github.com/gorilla/mux"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 )
+
+const (
+	DRAVID int = 31258
+	SACHIN int = 29437
+	KALLIS int = 28903
+	MURALI int = 44039
+	KUMBLE int = 40850
+	WARNE  int = 40705
+)
+
+var total_balls = []int{DRAVID, SACHIN, KALLIS, MURALI, KUMBLE, WARNE}
+
+var falcones map[string]int = make(map[string]int)
 
 var planets = Planets{Planet{"Donlon", 400}, Planet{"Enchai", 40}, Planet{"Jebing", 100}, Planet{"Sapir", 240}, Planet{"Lerbin", 200}, Planet{"Pingasor", 80}}
 
 var vehicles = Vehicles{Vehicle{"Spaceship", 5, 100, 50}, Vehicle{"Rocket", 3, 200, 100}, Vehicle{"Cycle", 8, 40, 10}, Vehicle{"Missile", 1, 300, 150}}
 
-func Init(rw http.ResponseWriter, req *http.Request) {
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
+///returns a token for an N integer
+func randSeq(n int) string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
 
+//returns a random no out of 0-6
+func where_is_falcone() int {
+	rand.Seed(time.Now().UTC().UnixNano())
+	var no = rand.Intn(6)
+	return (total_balls[no] * rand.Intn(10)) % 6
+}
+
+//returns a token for a user who is trying to find falcone.
+func Init(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.WriteHeader(http.StatusOK)
+	var random_str = randSeq(32)
+	var falcone_planet = where_is_falcone()
+	falcones[random_str] = falcone_planet
+	var token = map[string]string{"token": random_str}
+	if err := json.NewEncoder(rw).Encode(token); err != nil {
+		panic(err)
+	}
+}
+
+//returns all the planets
 func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
@@ -25,6 +70,7 @@ func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
+//returns all the vehicles
 func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
@@ -41,7 +87,7 @@ func main() {
 		port = "8000"
 	}
 	fmt.Println("Starting server on " + port)
-	r.HandleFunc("/init", Init).Methods("POST").Headers("Accept", "application/json")
+	r.HandleFunc("/token", Init).Methods("POST").Headers("Accept", "application/json")
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
 	r.HandleFunc("/vehicles", VehicleHandler).Methods("GET")
 
