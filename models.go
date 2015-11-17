@@ -15,3 +15,9 @@ type Vehicle struct {
 }
 
 type Vehicles []Vehicle
+
+type FindFalconeReq struct {
+	Token        string   `json:"token"`
+	PlanetNames  []string `json:"planet_names"`
+	VehicleNames []string `json:"vehicle_names"`
+}

@@ -25,7 +25,7 @@ var falcones map[string]int = make(map[string]int)
 
 var planets = Planets{Planet{"Donlon", 400}, Planet{"Enchai", 40}, Planet{"Jebing", 100}, Planet{"Sapir", 240}, Planet{"Lerbin", 200}, Planet{"Pingasor", 80}}
 
-var vehicles = Vehicles{Vehicle{"Spaceship", 5, 100, 50}, Vehicle{"Rocket", 3, 200, 100}, Vehicle{"Cycle", 8, 40, 10}, Vehicle{"Missile", 1, 300, 150}}
+var vehicles = Vehicles{Vehicle{"Space pod", 5, 100, 50}, Vehicle{"Space rocket", 3, 200, 100}, Vehicle{"Space shuttle", 8, 40, 10}, Vehicle{"Space ship", 1, 300, 150}}
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -80,6 +80,36 @@ func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func FindFalcone(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.WriteHeader(http.StatusOK)
+
+	decoder := json.NewDecoder(req.Body)
+	var find_falcone FindFalconeReq
+	err := decoder.Decode(&find_falcone)
+	fmt.Println(find_falcone)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+	var planetNames = find_falcone.PlanetNames
+	var falconePlanet = planets[falcones[find_falcone.Token]]
+	for _, name := range planetNames {
+		if name == falconePlanet.Name {
+			var status = map[string]string{"status": "success"}
+			if err := json.NewEncoder(rw).Encode(status); err != nil {
+				panic(err)
+			}
+			return
+		}
+	}
+	var status = map[string]string{"status": "false"}
+	if err := json.NewEncoder(rw).Encode(status); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	r := mux.NewRouter()
 	var port = os.Getenv("PORT")
@@ -88,8 +118,10 @@ func main() {
 	}
 	fmt.Println("Starting server on " + port)
 	r.HandleFunc("/token", Init).Methods("POST").Headers("Accept", "application/json")
+
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
 	r.HandleFunc("/vehicles", VehicleHandler).Methods("GET")
+	r.HandleFunc("/find", FindFalcone).Methods("POST").Headers("Accept", "application/json")
 
 	http.Handle("/", r)
 	http.ListenAndServe(":"+port, nil)
