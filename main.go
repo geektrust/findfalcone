@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//no of balls faced or bowled in test cricket - used to calculate the
 const (
 	DRAVID int = 31258
 	SACHIN int = 29437
@@ -80,32 +81,59 @@ func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
+//API to find the falcone
 func FindFalcone(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
-	rw.WriteHeader(http.StatusOK)
-
 	decoder := json.NewDecoder(req.Body)
 	var find_falcone FindFalconeReq
 	err := decoder.Decode(&find_falcone)
-	fmt.Println(find_falcone)
 	if err != nil {
-		fmt.Println(err)
-		panic(err)
+		errorHandler(rw, req, http.StatusBadRequest, err.Error())
+		return
 	}
 	var planetNames = find_falcone.PlanetNames
-	var falconePlanet = planets[falcones[find_falcone.Token]]
-	for _, name := range planetNames {
-		if name == falconePlanet.Name {
-			var status = map[string]string{"status": "success"}
-			if err := json.NewEncoder(rw).Encode(status); err != nil {
-				panic(err)
+	if len(planetNames) != 4 {
+		errorHandler(rw, req, http.StatusBadRequest, "No of Planet names has to be 4")
+		return
+	}
+	var vehicleNames = find_falcone.VehicleNames
+	if len(vehicleNames) != 4 {
+		errorHandler(rw, req, http.StatusBadRequest, "No of Vehicle names has to be 4")
+		return
+	}
+	if len(falcones) == 0 {
+		errorHandler(rw, req, http.StatusBadRequest, "Token not initialized. Please get a new token with the /token API")
+		return
+	}
+
+	// var falconePlanetIndex = falcones[find_falcone.Token]
+	if falconePlanetIndex, ok := falcones[find_falcone.Token]; ok {
+		rw.WriteHeader(http.StatusOK)
+		var falconePlanet = planets[falconePlanetIndex]
+		for _, name := range planetNames {
+			if name == falconePlanet.Name {
+				var status = map[string]string{"status": "success"}
+				if err := json.NewEncoder(rw).Encode(status); err != nil {
+					panic(err)
+				}
+				return
 			}
-			return
 		}
+	} else {
+		errorHandler(rw, req, http.StatusBadRequest, "Token not initialized. Please get a new token with the /token API")
+		return
 	}
 	var status = map[string]string{"status": "false"}
 	if err := json.NewEncoder(rw).Encode(status); err != nil {
+		panic(err)
+	}
+}
+
+func errorHandler(rw http.ResponseWriter, req *http.Request, status int, message string) {
+	rw.WriteHeader(status)
+	var error = map[string]string{"error": message}
+	if err := json.NewEncoder(rw).Encode(error); err != nil {
 		panic(err)
 	}
 }
@@ -118,7 +146,6 @@ func main() {
 	}
 	fmt.Println("Starting server on " + port)
 	r.HandleFunc("/token", Init).Methods("POST").Headers("Accept", "application/json")
-
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
 	r.HandleFunc("/vehicles", VehicleHandler).Methods("GET")
 	r.HandleFunc("/find", FindFalcone).Methods("POST").Headers("Accept", "application/json")
