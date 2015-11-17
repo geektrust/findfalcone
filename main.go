@@ -24,9 +24,9 @@ var total_balls = []int{DRAVID, SACHIN, KALLIS, MURALI, KUMBLE, WARNE}
 
 var falcones map[string]int = make(map[string]int)
 
-var planets = Planets{Planet{"Donlon", 400}, Planet{"Enchai", 40}, Planet{"Jebing", 100}, Planet{"Sapir", 240}, Planet{"Lerbin", 200}, Planet{"Pingasor", 80}}
+var planets = Planets{Planet{"Donlon", 100}, Planet{"Enchai", 200}, Planet{"Jebing", 300}, Planet{"Sapir", 400}, Planet{"Lerbin", 500}, Planet{"Pingasor", 600}}
 
-var vehicles = Vehicles{Vehicle{"Space pod", 5, 100, 50}, Vehicle{"Space rocket", 3, 200, 100}, Vehicle{"Space shuttle", 8, 40, 10}, Vehicle{"Space ship", 1, 300, 150}}
+var vehicles = Vehicles{Vehicle{"Space pod", 2, 200, 2}, Vehicle{"Space rocket", 1, 300, 4}, Vehicle{"Space shuttle", 1, 400, 5}, Vehicle{"Space ship", 2, 600, 10}}
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
