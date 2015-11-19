@@ -113,7 +113,7 @@ func FindFalcone(rw http.ResponseWriter, req *http.Request) {
 		var falconePlanet = planets[falconePlanetIndex]
 		for _, name := range planetNames {
 			if name == falconePlanet.Name {
-				var status = map[string]string{"status": "success"}
+				var status = map[string]string{"status": "success", "planet_name": name}
 				if err := json.NewEncoder(rw).Encode(status); err != nil {
 					panic(err)
 				}
