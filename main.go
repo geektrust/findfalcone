@@ -3,7 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/dhanush/findfalcone/Godeps/_workspace/src/github.com/gorilla/mux"
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"math/rand"
 	"net/http"
 	"os"
@@ -51,6 +52,7 @@ func where_is_falcone() int {
 func Init(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
+
 	rw.WriteHeader(http.StatusOK)
 	var random_str = randSeq(32)
 	var falcone_planet = where_is_falcone()
@@ -149,7 +151,6 @@ func main() {
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
 	r.HandleFunc("/vehicles", VehicleHandler).Methods("GET")
 	r.HandleFunc("/find", FindFalcone).Methods("POST").Headers("Accept", "application/json")
-
-	http.Handle("/", r)
-	http.ListenAndServe(":"+port, nil)
+	handler := cors.Default().Handler(r)
+	http.ListenAndServe(":"+port, handler)
 }
