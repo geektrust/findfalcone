@@ -52,7 +52,9 @@ func where_is_falcone() int {
 func Init(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
-	rw.Header().Set("Access-Control-Allow-Methods", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
 	rw.WriteHeader(http.StatusOK)
 	var random_str = randSeq(32)
@@ -68,7 +70,10 @@ func Init(rw http.ResponseWriter, req *http.Request) {
 func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
-	rw.Header().Set("Access-Control-Allow-Methods", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(planets); err != nil {
 		panic(err)
@@ -79,7 +84,10 @@ func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
-	rw.Header().Set("Access-Control-Allow-Methods", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(vehicles); err != nil {
 		panic(err)
@@ -90,7 +98,10 @@ func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 func FindFalcone(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
-	rw.Header().Set("Access-Control-Allow-Methods", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	rw.Header().Set("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	decoder := json.NewDecoder(req.Body)
 	var find_falcone FindFalconeReq
 	err := decoder.Decode(&find_falcone)
