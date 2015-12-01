@@ -52,6 +52,7 @@ func where_is_falcone() int {
 func Init(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "*")
 
 	rw.WriteHeader(http.StatusOK)
 	var random_str = randSeq(32)
@@ -67,6 +68,7 @@ func Init(rw http.ResponseWriter, req *http.Request) {
 func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "*")
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(planets); err != nil {
 		panic(err)
@@ -77,6 +79,7 @@ func PlanetsHandler(rw http.ResponseWriter, req *http.Request) {
 func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "*")
 	rw.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(rw).Encode(vehicles); err != nil {
 		panic(err)
@@ -87,6 +90,7 @@ func VehicleHandler(rw http.ResponseWriter, req *http.Request) {
 func FindFalcone(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
+	rw.Header().Set("Access-Control-Allow-Methods", "*")
 	decoder := json.NewDecoder(req.Body)
 	var find_falcone FindFalconeReq
 	err := decoder.Decode(&find_falcone)
@@ -151,6 +155,10 @@ func main() {
 	r.HandleFunc("/planets", PlanetsHandler).Methods("GET")
 	r.HandleFunc("/vehicles", VehicleHandler).Methods("GET")
 	r.HandleFunc("/find", FindFalcone).Methods("POST").Headers("Accept", "application/json")
+	// c := cors.New(cors.Options{
+	// 	AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"},
+	// })
 	handler := cors.Default().Handler(r)
+	// handler := c.Handler(r)
 	http.ListenAndServe(":"+port, handler)
 }
