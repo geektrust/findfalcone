@@ -39,5 +39,5 @@
 
 [metadata.heroku]
   root-package = "github.com/geektrust/findfalcone"
-  go-version = "1.9.2"
+  go-version = "1.11.2"
   install = [ "." ]
